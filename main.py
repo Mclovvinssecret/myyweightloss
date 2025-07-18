@@ -60,6 +60,7 @@ def update_data(message):
 
     bot.reply_to(message, f"✅ Updated!\nWeight: {weight} kg\nBody fat: {bodyfat}%")
 
-# === Only needed for local testing ===
+# === needed ===
 if __name__ == "__main__":
-    app.run(debug=False)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port)
