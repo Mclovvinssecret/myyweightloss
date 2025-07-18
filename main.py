@@ -21,6 +21,15 @@ def telegram_webhook():
 def home():
     return "Weight loss bot is running!"
 
+# ✅ ADD THIS BELOW
+if os.environ.get("RENDER") == "true":
+    bot.remove_webhook()
+    bot.set_webhook(url=f"https://myyweightloss.onrender.com/{BOT_TOKEN}")
+
+# === /update command ===
+@bot.message_handler(commands=['update'])
+def update_data(message):
+
 # === /update command ===
 @bot.message_handler(commands=['update'])
 def update_data(message):
