@@ -29,10 +29,6 @@ if os.environ.get("RENDER") == "true":
 # === /update command ===
 @bot.message_handler(commands=['update'])
 def update_data(message):
-
-# === /update command ===
-@bot.message_handler(commands=['update'])
-def update_data(message):
     try:
         parts = message.text.strip().split()
         if len(parts) != 3:
