@@ -1,0 +1,72 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>My Fat Loss Journey</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #f9f9f9;
+      padding: 20px;
+      color: #333;
+    }
+    .card {
+      background: white;
+      padding: 15px;
+      margin-bottom: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.05);
+    }
+  </style>
+</head>
+<body>
+  <h1>🔥 My Fat Loss Journey</h1>
+
+  <div class="card">
+    <h2>📊 Stats</h2>
+    <ul>
+      <li>Age: 15</li>
+      <li>Height: 155 cm</li>
+      <li>Target Weight: 48 kg</li>
+      <li>Target Body Fat: 13%</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>📈 Progress Chart</h2>
+    <canvas id="progressChart" width="400" height="200"></canvas>
+  </div>
+
+  <div class="card">
+    <h2>💬 Daily Motivation</h2>
+    <p id="motivation"></p>
+  </div>
+
+  <script src="motivational_quotes.js"></script>
+  <script>
+    fetch('data.json')
+      .then(res => res.json())
+      .then(data => {
+        const ctx = document.getElementById('progressChart').getContext('2d');
+        const chart = new Chart(ctx, {
+          type: 'line',
+          data: {
+            labels: data.history.map((_, i) => 'Week ' + (i + 1)),
+            datasets: [{
+              label: 'Weight (kg)',
+              data: data.history.map(entry => entry.weight),
+              borderColor: 'blue',
+              tension: 0.1
+            }]
+          }
+        });
+      });
+
+    // Display motivational quote
+    const date = new Date();
+    const index = date.getDate() % motivationalQuotes.length;
+    document.getElementById("motivation").innerText = motivationalQuotes[index];
+  </script>
+</body>
+</html>
