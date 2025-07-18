@@ -1,6 +1,15 @@
-from bot import app
-import os
+@bot.message_handler(commands=['update'])
+def update_data(message):
+    try:
+        parts = message.text.strip().split()
+        if len(parts) != 3:
+            bot.reply_to(message, "❌ Usage: /update <weight_kg> <bodyfat_%>")
+            return
 
-if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 10000))  # Render sets this automatically
-    app.run(host="0.0.0.0", port=port)
+        weight = float(parts[1])
+        bodyfat = float(parts[2])
+    except ValueError:
+        bot.reply_to(message, "❌ Invalid numbers. Usage: /update 50.3 15.2")
+        return
+
+    # Continue updating the data.json...
