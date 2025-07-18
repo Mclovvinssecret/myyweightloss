@@ -1,28 +1,28 @@
-import os
+import telebot
 import json
+import os
 from datetime import datetime
 from flask import Flask, request
-import telebot
 
-# === Config ===
+# === Bot token and setup ===
 BOT_TOKEN = "8097212651:AAE3iv1fERb5on59dWZIfxhqVa3ISWVu3Zg"
 bot = telebot.TeleBot(BOT_TOKEN)
+
+# === Flask for Render hosting ===
 app = Flask(__name__)
 
-# === Telegram webhook endpoint ===
-@app.route(f"/{BOT_TOKEN}", methods=["POST"])
+@app.route(f"/{BOT_TOKEN}", methods=['POST'])
 def telegram_webhook():
     update = telebot.types.Update.de_json(request.stream.read().decode("utf-8"))
     bot.process_new_updates([update])
-    return "OK", 200
+    return "!", 200
 
-# === Homepage (GET request) ===
-@app.route("/", methods=["GET"])
+@app.route("/", methods=['GET'])
 def home():
-    return "✅ Weight loss bot is running!"
+    return "Weight loss bot is running!"
 
-# === Set Webhook on startup (Render only) ===
-if os.environ.get("RENDER") == "true":
+# === Set webhook on startup ===
+with app.app_context():
     bot.remove_webhook()
     bot.set_webhook(url=f"https://myyweightloss.onrender.com/{BOT_TOKEN}")
 
@@ -41,26 +41,25 @@ def update_data(message):
         bot.reply_to(message, "❌ Invalid numbers. Example: /update 50.3 15.2")
         return
 
-    entry = {
+    new_entry = {
         "date": datetime.utcnow().strftime("%Y-%m-%d"),
         "weight": weight,
         "bodyfat": bodyfat
     }
 
-    # Save or append to data.json
     if os.path.exists("data.json"):
         with open("data.json", "r") as f:
             data = json.load(f)
     else:
         data = []
 
-    data.append(entry)
+    data.append(new_entry)
 
     with open("data.json", "w") as f:
         json.dump(data, f, indent=2)
 
     bot.reply_to(message, f"✅ Updated!\nWeight: {weight} kg\nBody fat: {bodyfat}%")
 
-# === For local testing only ===
+# === Only needed for local testing ===
 if __name__ == "__main__":
-    app.run()
+    app.run(debug=False)
